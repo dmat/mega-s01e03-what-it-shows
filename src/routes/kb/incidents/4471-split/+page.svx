@@ -12,7 +12,11 @@ signature: Dinny Mathew
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
-  const tickets = {};
+  const tickets = {
+    parser: { label: '#1', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/1' },
+    hint: { label: '#2', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/2' },
+    shift: { label: '#3', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/3' },
+  };
 </script>
 
 [#4471](/kb/incidents/4471) says one issue with one fix queued. Its reports describe three

@@ -1,0 +1,1 @@
+export{n as component}from"../chunks/CAkX8T_j.js";
