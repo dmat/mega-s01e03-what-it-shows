@@ -1,0 +1,60 @@
+---
+layout: runbook
+title: '#4471 is three problems, not one'
+owner: Dinny Mathew
+status: proposed
+reviewed: 2026-10-28
+signature: Dinny Mathew
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const tickets = {};
+</script>
+
+[#4471](/kb/incidents/4471) says one issue with one fix queued. Its reports describe three
+problems, and the queued parser fix closes only the first. Each now has its own ticket.
+
+<ProblemTable ticket={4471} {tickets} />
+
+<Callout kind="warn">
+Shipping the parser fix and closing #4471 leaves the other two problems open with no ticket.
+</Callout>
+
+## The three problems
+
+**`parser`: the shared parser reads dates month first.** Every tenant on file writes the day
+first, so a booking for 7 April lands on 4 July. This is the bug #4471 names. It reaches people
+through the app, email and the booking-v2 form.
+
+**`hint`: the booking-v3 form asks for the wrong order.** It prints `MM/DD/YYYY` under its date
+field. People type what it asks for, month first, and the form reads it the tenant's way, day
+first. Only booking-v3 tenants, and only through the form. The parser fix does not touch it: the
+form hint has to change.
+
+**`shift`: dates move by one day.** No day and month swap moves a date by one day. These
+reports say "Tuesday showed as Monday", and one client in Lisbon and one in Toronto saw different
+days for the same meeting. That points at time zones, not date order. The desk noted these
+reports (`desk-notes.json`) but counted them under `parser`.
+
+## How they got merged
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports whose subject lines match.
+People describe all three problems in the same words ("Date is wrong", "Wrong day on the
+invite"), so the subject cannot tell them apart. Intake's tag cannot either: it guesses from the
+reporter's browser, and the table counts how often that guess names another problem. What tells
+them apart is the tenant (its locale and booking form), the channel, and what the report says
+happened to the date.
+
+## What to do
+
+- Keep #4471 for the parser fix only, and link the other two tickets from it.
+- Fix the booking-v3 date hint to match the tenant's locale.
+- Find where the one-day shift comes from before more reports get filed as `parser`.
+- Write a new decision record to replace 0001 for date reports: merge by cause, not by
+  subject. Decision 0001 stays as it is; a new record replaces it.
+
+<RenderStamp {signature} />
