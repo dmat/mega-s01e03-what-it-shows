@@ -43,6 +43,14 @@
   </tbody>
 </table>
 
+{#if groups.some((g) => g.problem === 'shift') && groups.some((g) => g.problem === 'parser')}
+  <p class="small">
+    The desk files the {groups.find((g) => g.problem === 'shift')?.reports.length} shift reports under <code>parser</code>,
+    so its own count for <code>parser</code> is
+    {(groups.find((g) => g.problem === 'parser')?.reports.length ?? 0) + (groups.find((g) => g.problem === 'shift')?.reports.length ?? 0)}.
+  </p>
+{/if}
+
 <p class="small">
   {subjects.shared} of {subjects.subjects} subject lines carry reports from more than one problem, so merging by subject
   could not keep them apart.

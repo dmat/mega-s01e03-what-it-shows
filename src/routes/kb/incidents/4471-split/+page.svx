@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 is three problems, not one'
 owner: Dinny Mathew
-status: proposed
+status: living
 reviewed: 2026-10-28
 signature: 'v1.eyJzdWIiOiI2OTAiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzI0MjIwNiwiZXhwIjoxNzkzMzI4NjA2fQ.J2DZEHrTXJe4OGAjzAqzK4cumOpsguSnKBiXBBIF7OU'
 ---
@@ -13,31 +13,34 @@ signature: 'v1.eyJzdWIiOiI2OTAiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhd
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
   const tickets = {
-    parser: { label: '#1', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/1' },
-    hint: { label: '#2', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/2' },
-    shift: { label: '#3', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/3' },
+    parser: { label: '#1 · fixed', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/1' },
+    hint: { label: '#2 · won\'t fix', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/2' },
+    shift: { label: '#3 · open', href: 'https://github.com/dmat/mega-s01e03-what-it-shows/issues/3' },
   };
 </script>
 
-[#4471](/kb/incidents/4471) says one issue with one fix queued. Its reports describe three
-problems, and the queued parser fix closes only the first. Each now has its own ticket.
+[#4471](/kb/incidents/4471) was filed as one issue with one fix. Its reports describe three
+problems. Engineering closed #4471 on 5 October: the parser is fixed and the booking-v3 form is
+retired. The third problem, a one-day shift, is still open.
 
 <ProblemTable ticket={4471} {tickets} />
 
 <Callout kind="warn">
-Shipping the parser fix and closing #4471 leaves the other two problems open with no ticket.
+#4471 is closed, but the one-day shift is not fixed. Neither the parser fix nor retiring the form
+moves a date by one day. Keep its ticket open until the cause is found.
 </Callout>
 
 ## The three problems
 
 **`parser`: the shared parser reads dates month first.** Every tenant on file writes the day
 first, so a booking for 7 April lands on 4 July. This is the bug #4471 names. It reaches people
-through the app, email and the booking-v2 form.
+through the app, email and the booking-v2 form. Fixed on 5 October:
+`fix(dates): parse dd/mm for eu locales`.
 
 **`hint`: the booking-v3 form asks for the wrong order.** It prints `MM/DD/YYYY` under its date
 field. People type what it asks for, month first, and the form reads it the tenant's way, day
-first. Only booking-v3 tenants, and only through the form. The parser fix does not touch it: the
-form hint has to change.
+first. Only booking-v3 tenants, and only through the form. The parser fix does not touch it.
+Engineering will not fix it, because the booking-v3 form is retired.
 
 **`shift`: dates move by one day.** No day and month swap moves a date by one day. These
 reports say "Tuesday showed as Monday", and one client in Lisbon and one in Toronto saw different
@@ -55,9 +58,9 @@ happened to the date.
 
 ## What to do
 
-- Keep #4471 for the parser fix only, and link the other two tickets from it.
-- Fix the booking-v3 date hint to match the tenant's locale.
-- Find where the one-day shift comes from before more reports get filed as `parser`.
+- Find where the one-day shift comes from. It is the only one of the three still open, and the
+  last of its reports came in the day before #4471 closed.
+- File new one-day reports under the shift ticket, not under `parser`, which is now fixed.
 - Write a new decision record to replace 0001 for date reports: merge by cause, not by
   subject. Decision 0001 stays as it is; a new record replaces it.
 
